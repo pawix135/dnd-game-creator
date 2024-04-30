@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id String @id @default(uuid())
+  title String @unique
+  image String?
+
+  traits Trait[]
+  players Player[]
+
+  @@map("games")
+}
+
+model Player{
+  id String @id @default(uuid())
+  name String
+  image String
+
+  game Game @relation(fields: [gameId], references: [id])
+  gameId String
+
+  level Int @default(1)
+
+  race Race @relation(fields: [raceId], references: [id])
+  raceId String @unique
+  class Class @relation(fields: [classId], references: [id])
+  classId String @unique
+  abilityScore PlayerAbilityScores?
+
+  @@map("players")
+}
+
+model PlayerAbilityScores {
+  id String @id @default(uuid())
+  str Int
+  dex Int
+  con Int
+  int Int
+  wis Int
+  cha Int
+
+  player Player @relation(references: [id], fields: [playerId])
+  playerId String @unique
+
+  @@map("ability_scores")
+}
+
+model Race {
+
+  id String @id @default(uuid())
+  name String @unique
+  description String
+
+  player Player?
+  playerId String @unique
+
+  traits Trait @relation(fields: [traitId], references: [id])
+  traitId String @unique
+
+  @@map("races")
+}
+
+model RaceVariant {
+  id String @id @default(uuid())
+  name String
+
+  trate Trait @relation(fields: [traitId], references: [id])
+  traitId String @unique
+
+  @@unique([name])
+
+  @@map("races_variants")
+
+}
+
+model Trait {
+  id String @id @default(uuid())
+  name String
+  description String
+
+  game Game @relation(references: [id], fields: [gameId])
+  gameId String
+
+  race Race[]
+
+  raceVariant RaceVariant[]
+
+  @@map("traits")
+}
+
+
+model Class {
+  id String @id @default(uuid())
+  name String @unique
+
+  player Player?
+
+  description String
+  features ClassFeature[]
+
+  @@map("classes")
+
+}
+
+model ClassFeature {
+  id String @id @default(uuid())
+  description String
+  class Class @relation(fields: [classId], references: [id])
+  classId String
+
+  @@map("class_features")
+
+}
