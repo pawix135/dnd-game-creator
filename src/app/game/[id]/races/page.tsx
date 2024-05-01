@@ -1,7 +1,14 @@
+import { createRace } from "@/actions/game/race/create";
+import CreateRaceForm from "@/components/game/forms/CreateRace/createRaceForm";
+
 interface Props {}
 
 const RacesPage: React.FC<Props> = () => {
-  return <div>Races page</div>;
+  return (
+    <div>
+      <CreateRaceForm create={createRace} />
+    </div>
+  );
 };
 
 export default RacesPage;
