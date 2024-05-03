@@ -14,6 +14,7 @@ model Game {
 
   traits Trait[]
   players Player[]
+  races Race[]
 
   @@map("games")
 }
@@ -30,6 +31,7 @@ model Player{
 
   race Race @relation(fields: [raceId], references: [id])
   raceId String @unique
+
   class Class @relation(fields: [classId], references: [id])
   classId String @unique
   abilityScore PlayerAbilityScores?
@@ -58,11 +60,12 @@ model Race {
   name String @unique
   description String
 
-  player Player?
-  playerId String @unique
+  game Game @relation(fields: [gameId], references: [id])
+  gameId String
 
-  traits Trait @relation(fields: [traitId], references: [id])
-  traitId String @unique
+  players Player[]
+
+  traits Trait[]
 
   @@map("races")
 }
@@ -71,7 +74,7 @@ model RaceVariant {
   id String @id @default(uuid())
   name String
 
-  trate Trait @relation(fields: [traitId], references: [id])
+  trate Trait @relation(references: [id], fields: [traitId])
   traitId String @unique
 
   @@unique([name])
@@ -81,6 +84,7 @@ model RaceVariant {
 }
 
 model Trait {
+  
   id String @id @default(uuid())
   name String
   description String

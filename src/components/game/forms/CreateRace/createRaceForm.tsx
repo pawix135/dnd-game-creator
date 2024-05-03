@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateRace, CreateRaceSchema } from "@/types/game/form/createRace";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import TraitsArray from "./traits";
 import { Button } from "@/components/ui/button";
 
 interface Props {
-  create: (values: CreateRace) => Promise<boolean>;
+  create: (values: CreateRace) => Promise<string | null>;
 }
 
 const defaultValues = (id: string): CreateRace => ({
@@ -32,7 +32,16 @@ const CreateRaceForm: React.FC<Props> = ({ create }) => {
   const watch = useWatch({ control: form.control });
 
   const submit = async (values: CreateRace) => {
-    await create(values);
+    console.log("hello");
+
+    const created = await create(values);
+
+    if (!created) {
+      console.log("Something went wrong");
+      return;
+    }
+
+    form.reset();
   };
 
   return (
